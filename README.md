@@ -1,69 +1,150 @@
-# React + TypeScript + Vite
+# Pump Master Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Pump Master is a React + TypeScript frontend application for managing pumps and monitoring real-time pressure data. It integrates with a multi-tenant backend system, supporting subdomain-based login, pump CRUD operations, chart visualizations, and protected routing.
 
-Currently, two official plugins are available:
+## 🧩 Tech Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **React 18**
+- **TypeScript**
+- **Vite** (development/build tool)
+- **React Router DOM v6**
+- **Tailwind CSS**
+- **Recharts** (for pressure visualization)
+- **Context API** (for Auth management)
+- **Axios** (for HTTP calls)
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 🚀 Features
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### ✅ Multi-Tenant Support
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+- Extracts subdomain using a utility `getSubdomain.ts`
+- Uses subdomain as tenant identifier in API calls
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### 🔐 Authentication
+
+- Basic login form handled via `Auth.tsx`
+- Auth token and tenant saved in React Context (`AuthContext.tsx`)
+- `PrivateRoute` component restricts access to protected pages
+
+### 🛠 Pump Management
+
+- **PumpForm**: Add or edit pump details
+- **PumpList**: Displays a table of all pumps
+- **PumpDetail**: Shows map and real-time pressure chart
+
+### 📈 Pressure Chart
+
+- Visualizes hourly pump pressure data using `Recharts`
+- Example chart component: `PressureChart.tsx`
+
+### 🗺️ Map Integration (if applicable)
+
+- Based on coordinates provided in each pump record
+- Uses `react-leaflet` (check installed dependencies)
+
+---
+
+## 📁 Project Structure
+
+```
+├── public/                 # Static assets
+├── src/
+│   ├── api/               # Axios-based API services
+│   ├── assets/            # Icons, images
+│   ├── components/        # UI Components (Pump, Modal, Navbar, etc.)
+│   ├── context/           # React Context (AuthContext)
+│   ├── hooks/             # Custom hooks (useAuth)
+│   ├── layouts/           # Layout wrappers
+│   ├── pages/             # Route-based pages (Auth, Pumps, PumpDetail)
+│   ├── routes/            # PrivateRoute component
+│   ├── types/             # TypeScript type definitions
+│   ├── utils/             # Utility functions (e.g., getSubdomain)
+│   └── main.tsx           # App entry point
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## 📦 Installation
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+# Install dependencies
+npm install
+
+# Start dev server (default: http://localhost:3000)
+npm run dev
 ```
+
+---
+
+## 🔐 Multi-Tenant Configuration (Subdomain Based)
+
+Make sure your backend API is available at subdomain URLs like:
+
+```
+http://{tenant}.localhost:5164
+```
+
+To test locally:
+
+1. Edit your `hosts` file (Windows: `C:\Windows\System32\drivers\etc\hosts`)
+2. Add lines like:
+   ```
+   127.0.0.1 tenant1.localhost
+   127.0.0.1 tenant2.localhost
+   ```
+
+Then run frontend with Vite and open:
+
+```
+http://tenant1.localhost:3000
+```
+
+---
+
+## 🔌 Environment Variables
+
+Create a `.env` file for custom configurations (if needed):
+
+```env
+VITE_API_BASE=http://localhost:5164
+```
+
+> The base URL will be dynamically updated using the tenant subdomain.
+
+---
+
+## ⚙️ Scripts
+
+```bash
+npm run dev       # Run development server
+npm run build     # Build production version
+npm run preview   # Preview production build
+```
+
+---
+
+## 📚 Key Files Overview
+
+- `AuthContext.tsx`: Stores and manages auth token and tenant
+- `PumpApi.ts`: All pump-related API calls (get, create, update, delete)
+- `PumpList.tsx`, `PumpForm.tsx`: Pump UI logic
+- `getSubdomain.ts`: Extracts tenant name from window location
+- `PrivateRoute.tsx`: Protects private routes
+
+---
+
+## 🧪 TODOs / Improvements
+
+- Add error boundary and toast notifications
+- Add refresh token mechanism
+- Improve form validation
+- Add role-based access control
+
+---
+
+## 📄 License
+
+MIT
+
